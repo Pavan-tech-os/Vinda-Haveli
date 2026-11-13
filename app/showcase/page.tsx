@@ -1,4 +1,4 @@
-import ThreeDShowcase from '@/components/ThreeDShowcase';
+import ThreeDShowcase from '@/components/ShowcaseClient';
 import DishCard from '@/components/DishCard';
 import { SIGNATURE } from '@/data/dishes';
 export default function Showcase() {
