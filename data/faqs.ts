@@ -34,7 +34,7 @@ export const FAQS: Faq[] = [
     answer: `Our menu has ${ALL_DISHES.length} dishes across ${CATEGORIES.length} categories:\n${CATEGORIES.map((c) => `${c.emoji} ${c.label} (${inCat(c.slug).length})`).join('\n')}\n\nPrices range from ₹${Math.min(...prices)} to ₹${Math.max(...prices)}.`,
     links: [{ label: 'View full menu', href: '/menu' }] },
   { id: 'biryani', question: 'Which biryani varieties do you have?', keywords: ['biryani', 'biriyani', 'dum', 'hyderabadi', 'lucknowi', 'kolkata', 'malabar', 'chettinad'],
-    answer: `Our royal biryanis (${range('biryani')}):\n${list('biryani', 12)}`, links: [{ label: 'See all biryanis', href: '/menu/biryani' }, { label: '3D biryani showcase', href: '/showcase' }] },
+    answer: `Our royal biryanis (${range('biryani')}):\n${list('biryani', 12)}`, links: [{ label: 'See all biryanis', href: '/menu/biryani' }] },
   { id: 'veg-nonveg', question: 'Do you have veg and non-veg food?', keywords: ['veg', 'non veg', 'nonveg', 'non-veg', 'vegetarian', 'vegan', 'chicken', 'mutton', 'fish', 'egg', 'paneer'],
     answer: `Yes! We serve both. ${veg} of our ${ALL_DISHES.length} dishes are vegetarian (🟢) and ${ALL_DISHES.length - veg} are non-vegetarian (🔴). Use the Veg / Non-Veg filter on the menu page to see only what you like.`, links: [{ label: 'Browse menu', href: '/menu' }] },
   { id: 'pizza', question: 'Which pizzas do you serve?', keywords: ['pizza', 'pizzas', 'margherita', 'cheese pizza'],

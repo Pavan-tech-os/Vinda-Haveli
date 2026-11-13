@@ -5,6 +5,7 @@ import { ApiError } from '../validate';
 import { safeEqual } from '../password';
 import { markBookingPaid } from './bookings';
 import { markOrderPaid } from './orders';
+import { notifyOwnerBooking, notifyOwnerOrder } from '../notify';
 
 export type PayMode = 'razorpay' | 'demo' | 'disabled';
 export const payMode = (): PayMode =>
@@ -31,7 +32,16 @@ export async function createIntent(db: Db, a: { purpose: 'booking' | 'order'; re
 }
 
 async function apply(db: Db, p: any, demo: boolean) {
-  return p.purpose === 'booking' ? markBookingPaid(db, p.ref_id, demo) : markOrderPaid(db, p.ref_id, demo);
+  if (p.purpose === 'booking') {
+    const before = await db.prepare('SELECT payment_status FROM reservations WHERE id = ?').get(p.ref_id);
+    const b = await markBookingPaid(db, p.ref_id, demo);
+    if (b && before && before.payment_status !== 'paid' && before.payment_status !== 'demo') await notifyOwnerBooking(b); // email the owner once
+    return b;
+  }
+  const before = await db.prepare('SELECT payment_status FROM orders WHERE id = ?').get(p.ref_id);
+  const o = await markOrderPaid(db, p.ref_id, demo);
+  if (o && before?.payment_status === 'pending') await notifyOwnerOrder(o); // email the owner once
+  return o;
 }
 
 /** Browser reports success -> we verify the signature AND ask Razorpay for the payment before trusting it. */

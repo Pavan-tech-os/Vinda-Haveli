@@ -22,7 +22,7 @@ export default function Hero() {
           <p className="mt-5 max-w-lg text-taupe">An extraordinary journey through the royal flavours of India. Order biryani, pizzas, burgers, desserts and more.</p>
           <form onSubmit={(e) => { e.preventDefault(); router.push(`/menu?q=${encodeURIComponent(q)}`); }} className="mt-8 flex max-w-lg items-center gap-2 rounded-full border border-gold/40 bg-charcoal p-1.5 pl-4">
             <Search size={18} className="text-taupe" /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search for a dish or drink…" className="min-w-0 flex-1 bg-transparent py-2 text-sm outline-none placeholder:text-taupe" /><button className="btn-gold">Search</button></form>
-          <div className="mt-6 flex flex-wrap gap-3"><Link href="/menu" className="btn-gold">Order Now</Link><Link href="/showcase" className="btn-ghost">View in 3D</Link></div>
+          <div className="mt-6 flex flex-wrap gap-3"><Link href="/menu" className="btn-gold">Order Now</Link></div>
         </div>
         <div className="relative mx-auto aspect-square w-full max-w-md">
           <div className="absolute inset-0 rounded-full border-2 border-dashed border-gold/50" style={{ animation: 'spin 40s linear infinite' }} />

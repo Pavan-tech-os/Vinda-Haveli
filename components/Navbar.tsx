@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Menu, Moon, Search, ShoppingBag, Sun, Sunset, User, X } from 'lucide-react';
 import RestaurantLogo from './RestaurantLogo';
 import { totals, useStore } from '@/store/cartStore';
-const LINKS = [['Home', '/'], ['Menu', '/menu'], ['Book Dine', '/book-dine'], ['3D Showcase', '/showcase'], ['Offers', '/offers'], ['Contact', '/contact']];
+const LINKS = [['Home', '/'], ['Menu', '/menu'], ['Book Dine', '/book-dine'], ['Offers', '/offers'], ['Contact', '/contact']];
 const THEMES = [['light', Sun], ['evening', Sunset], ['dark', Moon]] as const;
 export default function Navbar() {
   const [open, setOpen] = useState(false); const [q, setQ] = useState(''); const [theme, setTheme] = useState('dark'); const [scrolled, setScrolled] = useState(false);

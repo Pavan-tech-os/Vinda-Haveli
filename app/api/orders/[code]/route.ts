@@ -1,11 +1,15 @@
 import { handle } from '@/lib/api';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-import { getOrderByCode } from '@/lib/services/orders';
-import { ApiError } from '@/lib/validate';
+import { createOrder, listUserOrders } from '@/lib/services/orders';
+import { createIntent } from '@/lib/services/payments';
+import { notifyOwnerOrder } from '@/lib/notify';
 
-export const GET = handle('user', async ({ db, user, params }) => {
-  const o = await getOrderByCode(db, params.code);
-  if (!o || (user!.role !== 'owner' && o.user_id !== user!.id)) throw new ApiError(404, 'Order not found.');
-  return { order: o };
+export const GET = handle('customer', async ({ db, user }) => ({ orders: await listUserOrders(db, user!.id) }));
+
+export const POST = handle('customer', async ({ db, user, body }) => {
+  const order = await createOrder(db, user!, body);
+  if (order.payment_method === 'cod') { await notifyOwnerOrder(order); return { order, intent: null }; }
+  const intent = await createIntent(db, { purpose: 'order', refId: order.id, userId: user!.id, amountPaise: order.total * 100, receipt: order.code });
+  return { order, intent };
 });
