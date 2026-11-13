@@ -7,9 +7,9 @@ import ReceiptActions from '@/components/ReceiptActions';
 import OrderPrompt from '@/components/OrderPrompt';
 import { plain } from '@/lib/labels';
 export const dynamic = 'force-dynamic';
-export default function Confirmed({ params }: { params: { code: string } }) {
-  const user = requireRole('customer', `/book-dine/confirmed/${params.code}`);
-  const b = getBookingByCode(getDb(), params.code);
+export default async function Confirmed({ params }: { params: { code: string } }) {
+  const user = await requireRole('customer', `/book-dine/confirmed/${params.code}`);
+  const b = await getBookingByCode(await getDb(), params.code);
   if (!b || b.user_id !== user.id) notFound();
   if (b.payment_status !== 'paid' && b.payment_status !== 'demo') redirect('/book-dine'); // never show a success page for an unpaid booking
   return (

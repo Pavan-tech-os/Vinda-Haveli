@@ -5,8 +5,8 @@ import BookDineFlow from '@/components/BookDineFlow';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Book Dine | VINDU HAVELI' };
 
-export default function BookDine() {
-  const user = requireRole('customer', '/book-dine');
+export default async function BookDine() {
+  const user = await requireRole('customer', '/book-dine');
   return (
     <main>
       <FoodVideoBackground video="interior" overlay={0.6} priority as="section" className="px-5 pb-12 pt-32 text-center">

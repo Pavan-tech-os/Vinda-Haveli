@@ -4,8 +4,8 @@ export const runtime = 'nodejs';
 import { ownerOrderRefunded, ownerSetOrderStatus } from '@/lib/services/orders';
 import { int, optStr } from '@/lib/validate';
 
-export const PATCH = handle('owner', ({ db, params, body }) => {
+export const PATCH = handle('owner', async ({ db, params, body }) => {
   const id = int(params.id, 'id', 1, 1e9);
-  if (body.action === 'refunded') return { order: ownerOrderRefunded(db, id) };
-  return { order: ownerSetOrderStatus(db, id, String(body.status ?? ''), optStr(body.reason, 'Reason', 300)) };
+  if (body.action === 'refunded') return { order: await ownerOrderRefunded(db, id) };
+  return { order: await ownerSetOrderStatus(db, id, String(body.status ?? ''), optStr(body.reason, 'Reason', 300)) };
 });

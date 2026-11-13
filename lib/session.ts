@@ -6,23 +6,25 @@ import { PublicUser, Role, createSession, destroySession, userFromToken } from '
 
 export const COOKIE = 'vh_session';
 
-export function getCurrentUser(): PublicUser | null {
+export async function getCurrentUser(): Promise<PublicUser | null> {
   const token = cookies().get(COOKIE)?.value;
-  return userFromToken(getDb(), token);
+  if (!token) return null; // visitors without a cookie never touch the database
+  return userFromToken(await getDb(), token);
 }
-export function startSession(userId: number) {
-  const { token, maxAgeSec } = createSession(getDb(), userId);
+export async function startSession(userId: number) {
+  const { token, maxAgeSec } = await createSession(await getDb(), userId);
   cookies().set(COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: process.env.COOKIE_SECURE === 'true', path: '/', maxAge: maxAgeSec });
 }
-export function endSession() {
-  destroySession(getDb(), cookies().get(COOKIE)?.value);
+export async function endSession() {
+  const token = cookies().get(COOKIE)?.value;
+  if (token) await destroySession(await getDb(), token);
   cookies().set(COOKIE, '', { httpOnly: true, path: '/', maxAge: 0 });
 }
 export const homeFor = (role: Role) => (role === 'owner' ? '/owner/dashboard' : '/dashboard');
 
 /** For server pages: send visitors to /login, or to their own dashboard if the role is wrong. */
-export function requireRole(role: Role, nextPath: string): PublicUser {
-  const u = getCurrentUser();
+export async function requireRole(role: Role, nextPath: string): Promise<PublicUser> {
+  const u = await getCurrentUser();
   if (!u) redirect(`/login?next=${encodeURIComponent(nextPath)}`);
   if (u.role !== role) redirect(homeFor(u.role));
   return u;

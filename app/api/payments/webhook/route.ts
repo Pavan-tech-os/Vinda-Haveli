@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export async function POST(req: Request) {
   try {
     const raw = await req.text();
-    return NextResponse.json(handleWebhook(getDb(), raw, req.headers.get('x-razorpay-signature')));
+    return NextResponse.json(await handleWebhook(await getDb(), raw, req.headers.get('x-razorpay-signature')));
   } catch (e: any) {
     if (e instanceof ApiError) return NextResponse.json({ error: e.message }, { status: e.status });
     console.error('[webhook]', e); return NextResponse.json({ error: 'error' }, { status: 500 });

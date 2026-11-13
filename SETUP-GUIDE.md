@@ -80,10 +80,15 @@ npm start
 ```
 
 ## 10. Deploy
-The database is a file, so the host must have a **persistent disk**. (Vercel/Netlify serverless hosting will **not** work for this version.)
-- **Your own Windows PC / VPS:** run `npm run build` then `npm start`; keep it running with `npm i -g pm2; pm2 start npm --name haveli -- start`. Put it behind a domain with HTTPS (Caddy or Nginx) and set `COOKIE_SECURE=true`.
-- **Render / Railway / Fly.io:** create a *Web Service* from your code, build `npm install && npm run build`, start `npm start`, attach a persistent disk and set `DATABASE_PATH` to a path on that disk (for example `/data/vindu-haveli.db`). Add every value from `.env.local` as environment variables.
-- Back up the `.db` file regularly. It contains all users, bookings and orders.
+
+### Vercel (free) with a Turso online database
+Vercel cannot keep files, so the website stores its data in Turso (a free online SQLite database).
+1. Create a free account at https://turso.tech, create a database (pick the location nearest your customers) and copy its **URL** (starts with `libsql://`) and a **token**.
+2. In Vercel > Project > Settings > Environment Variables add: `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_NAME`, `OWNER_PHONE`, `COOKIE_SECURE=true` (do not set `DATABASE_PATH`).
+3. Redeploy. The tables and the owner account are created automatically on the first visit.
+
+### Your own PC / a server with a disk
+Leave `TURSO_DATABASE_URL` empty. The site then uses the local SQLite file (`DATABASE_PATH`). Run `npm run build` then `npm start`, behind HTTPS with `COOKIE_SECURE=true`. Back up the `.db` file regularly.
 
 ## Troubleshooting
 - **"needs Node.js 22.13 or newer" error:** install the latest LTS: `winget install OpenJS.NodeJS.LTS`, reopen PowerShell.

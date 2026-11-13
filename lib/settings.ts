@@ -22,13 +22,13 @@ const LIMITS: Record<keyof Settings, [number, number]> = {
   advance_amount: [1, 100000], booking_duration: [30, 480], open_minutes: [0, 1439], close_minutes: [1, 1440],
   slot_interval: [15, 120], hold_minutes: [3, 60], max_advance_days: [1, 365], auto_confirm: [0, 1],
 };
-export function getSettings(db: Db): Settings {
+export async function getSettings(db: Db): Promise<Settings> {
   const s: any = defaultSettings();
-  for (const r of db.prepare('SELECT key, value FROM settings').all()) if (r.key in s && Number.isFinite(Number(r.value))) s[r.key] = Number(r.value);
+  for (const r of await db.prepare('SELECT key, value FROM settings').all()) if (r.key in s && Number.isFinite(Number(r.value))) s[r.key] = Number(r.value);
   return s;
 }
-export function updateSettings(db: Db, patch: Record<string, unknown>): Settings {
-  const cur = getSettings(db); const next: any = { ...cur };
+export async function updateSettings(db: Db, patch: Record<string, unknown>): Promise<Settings> {
+  const cur = await getSettings(db); const next: any = { ...cur };
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in LIMITS)) continue;
     const n = Number(v); const [lo, hi] = LIMITS[k as keyof Settings];
@@ -37,6 +37,6 @@ export function updateSettings(db: Db, patch: Record<string, unknown>): Settings
   }
   if (next.close_minutes - next.open_minutes < next.booking_duration) throw new Error('Opening hours are shorter than the booking duration.');
   const up = db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value');
-  for (const k of Object.keys(LIMITS)) up.run(k, String(next[k]));
+  for (const k of Object.keys(LIMITS)) await up.run(k, String(next[k]));
   return next;
 }

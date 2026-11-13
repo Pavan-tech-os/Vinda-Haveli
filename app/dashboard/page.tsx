@@ -13,10 +13,10 @@ import { dateLabel, minutesLabel } from '@/lib/time';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'My Dashboard | VINDU HAVELI' };
 
-export default function Dashboard() {
-  const user = requireRole('customer', '/dashboard'); const db = getDb(); expireHolds(db);
-  const bookings = plain(listUserBookings(db, user.id)).filter((b: any) => b.status !== 'held').slice(0, 3);
-  const orders = plain(listUserOrders(db, user.id));
+export default async function Dashboard() {
+  const user = await requireRole('customer', '/dashboard'); const db = await getDb(); await expireHolds(db);
+  const bookings = plain(await listUserBookings(db, user.id)).filter((b: any) => b.status !== 'held').slice(0, 3);
+  const orders = plain(await listUserOrders(db, user.id));
   return (
     <main className="section pt-28">
       <div className="flex flex-wrap items-center justify-between gap-4">

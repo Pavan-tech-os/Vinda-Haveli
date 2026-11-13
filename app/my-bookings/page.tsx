@@ -8,9 +8,9 @@ import { dateLabel, minutesLabel } from '@/lib/time';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'My Bookings | VINDU HAVELI' };
 
-export default function MyBookings() {
-  const user = requireRole('customer', '/my-bookings'); const db = getDb(); expireHolds(db);
-  const bookings = plain(listUserBookings(db, user.id)).filter((b: any) => b.status !== 'held');
+export default async function MyBookings() {
+  const user = await requireRole('customer', '/my-bookings'); const db = await getDb(); await expireHolds(db);
+  const bookings = plain(await listUserBookings(db, user.id)).filter((b: any) => b.status !== 'held');
   return (
     <main className="section pt-28">
       <h1 className="font-serif text-4xl md:text-5xl gold-text">My Bookings</h1>

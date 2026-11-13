@@ -4,7 +4,7 @@ export const runtime = 'nodejs';
 import { getSettings, updateSettings } from '@/lib/settings';
 import { bad } from '@/lib/validate';
 
-export const GET = handle('owner', ({ db }) => ({ settings: getSettings(db) }));
-export const PATCH = handle('owner', ({ db, body }) => {
-  try { return { settings: updateSettings(db, body) }; } catch (e: any) { throw bad(e.message); }
+export const GET = handle('owner', async ({ db }) => ({ settings: await getSettings(db) }));
+export const PATCH = handle('owner', async ({ db, body }) => {
+  try { return { settings: await updateSettings(db, body) }; } catch (e: any) { throw bad(e.message); }
 });

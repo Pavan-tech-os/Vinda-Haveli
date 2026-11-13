@@ -6,9 +6,9 @@ import { limited } from '@/lib/rate-limit';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-export const POST = handle('public', ({ req, db, body }) => {
+export const POST = handle('public', async ({ req, db, body }) => {
   if (limited('signup:' + ipOf(req), 10, 3600_000)) throw new ApiError(429, 'Too many sign-up attempts. Please try again later.');
-  const { user } = signup(db, body);
-  startSession(user.id);
+  const { user } = await signup(db, body);
+  await startSession(user.id);
   return { user, redirect: homeFor(user.role) };
 });

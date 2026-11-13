@@ -17,7 +17,7 @@ export function handle(access: Access, fn: (c: Ctx) => Promise<unknown> | unknow
         // Razorpay webhooks are server-to-server (no Origin header) and authenticate with their own signature.
         if (origin && host && new URL(origin).host !== host) throw new ApiError(403, 'Cross-site request blocked.');
       }
-      const db = getDb(); const user = getCurrentUser();
+      const db = await getDb(); const user = await getCurrentUser();
       if (access !== 'public') {
         if (!user) throw new ApiError(401, 'Please log in first.');
         if ((access === 'customer' || access === 'owner') && user.role !== access) throw new ApiError(403, 'You do not have access to this.');
